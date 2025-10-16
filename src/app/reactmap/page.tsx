@@ -1,14 +1,23 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { Map, Source, Layer } from "@vis.gl/react-maplibre";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import {
+  Map,
+  Source,
+  Layer,
+  MapRef,
+  Popup,
+  MapEvent,
+} from "@vis.gl/react-maplibre";
 import type {
   FillLayerSpecification,
   LineLayerSpecification,
 } from "maplibre-gl";
-import type { FeatureCollection } from "geojson";
+import type { FeatureCollection, Feature } from "geojson";
 
 const ReactMap = () => {
   const [geoData, setGeoData] = useState<FeatureCollection | null>(null);
+
+  const mapRef = useRef<MapRef>(null);
 
   useEffect(() => {
     fetch("/data/Stimmbezirke-AGH21.geojson")
@@ -17,15 +26,26 @@ const ReactMap = () => {
       .catch((err) => console.error("Error loading GeoJSON:", err));
   }, []);
 
+  const handleClick = (e: any) => {
+    if (!mapRef.current || !geoData) return;
+    const features = mapRef.current.queryRenderedFeatures(e.point, {
+      layers: ["districts-fill"],
+    });
+
+    if (!features.length) return;
+    console.log("Clicked UWB:", features[0].properties?.UWB);
+  };
+
   const districtsFill = {
-    id: "disctricts-fill",
+    id: "districts-fill",
     type: "fill",
+    source: "voting-disctricts",
     paint: {
       "fill-color": "#4C763B",
       "fill-opacity": 0.2,
     },
     //need to check how the filter works
-    /* filter: ["==", "$type", "Polygon"], */
+    filter: ["==", "$type", "Polygon"],
   } as FillLayerSpecification; // this needs to be cast to be type safe for the layer component
 
   const districtsOutline = {
@@ -39,22 +59,23 @@ const ReactMap = () => {
 
   return (
     <div className="bg-black h-screen w-screen">
-      <Map
-        initialViewState={{
-          longitude: 13.405,
-          latitude: 52.52,
-          zoom: 12,
-        }}
-        style={{ width: "100%", height: "100%" }}
-        mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
-      >
-        {geoData && (
-          <Source id="voting-disctricts" type="geojson" data={geoData}>
-            <Layer {...districtsFill} />
+      {geoData && (
+        <Map
+          id="test-map"
+          ref={mapRef}
+          initialViewState={{ longitude: 13.405, latitude: 52.52, zoom: 12 }}
+          style={{ width: "100%", height: "100%" }}
+          mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+          interactiveLayerIds={["districts-fill"]}
+          onLoad={() => console.log("Everything is loaded!")}
+          onClick={handleClick}
+        >
+          <Source id="voting-districts" type="geojson" data={geoData}>
+            <Layer {...districtsFill} source="voting-districts" />
             <Layer {...districtsOutline} />
           </Source>
-        )}
-      </Map>
+        </Map>
+      )}
     </div>
   );
 };
