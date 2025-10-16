@@ -23,3 +23,5 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 ## Map
 
 This project uses [MapLibre](https://maplibre.org/maplibre-style-spec/layers/) and the react wrapper [react-maplibre](https://visgl.github.io/react-maplibre/docs/api-reference/layer) to display data on openstreet maps.
+
+Maplibre will be used for standard map funcionallity and [deck.gl](https://deck.gl/) will be used to display layers of huge datasets.
