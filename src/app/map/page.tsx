@@ -2,13 +2,14 @@
 import React, { useState, useEffect } from "react";
 import { Map } from "@vis.gl/react-maplibre";
 import maplibregl from "maplibre-gl";
+import type { FeatureCollection } from "geojson";
 
-interface FeatureCollection {
+/* interface FeatureCollection {
   type: string;
   features: any[];
-}
+} */
 
-const MapTest = () => {
+const TestMap = () => {
   const [geoData, setGeoData] = useState<any>(null);
 
   useEffect(() => {
@@ -17,6 +18,7 @@ const MapTest = () => {
       .then((data) => setGeoData(data))
       .catch((err) => console.error("Error loading GeoJSON:", err));
   }, []);
+
   return (
     <div className="bg-black h-screen w-screen">
       <Map
@@ -77,26 +79,10 @@ const MapTest = () => {
 
             console.log("UWB:", feature.properties?.UWB);
           });
-
-          /*   map.on("click", "districts-fill", (e) => {
-            const features = map.queryRenderedFeatures(e.point, {
-              layers: ["districts-fill"],
-            });
-            if (!features.length) return;
-
-            const feature = features[0];
-            const coords = (feature.geometry as any).coordinates[0][0];
-            const name = feature.properties?.name || "Unknown";
-
-            new maplibregl.Popup()
-              .setLngLat([coords[0], coords[1]])
-              .setHTML(`<strong>${name}</strong>`)
-              .addTo(map);
-          }); */
         }}
       />
     </div>
   );
 };
 
-export default MapTest;
+export default TestMap;
