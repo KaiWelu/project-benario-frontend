@@ -37,20 +37,33 @@ const VoteMap = () => {
           header: true,
           skipEmptyLines: true,
           complete: (results) => {
-            const lookup: Record<string, number> = {};
-            results.data.forEach((row) => {
-              const combinedId = `0${row.Abgeordnetenhauswahlkreis}${row.Wahlbezirk}`;
-              if (!lookup[combinedId]) {
-                lookup[combinedId] = Number(row["Die Linke"]); // use any column you want
+            const rows = results.data as any[];
+            const record: Record<string, number> = {};
+
+            rows.forEach((row) => {
+              const bezirksnummer = row["Bezirksnummer"];
+              const wahlbezirk = row["Wahlbezirk"];
+
+              const composite = `0${bezirksnummer}${wahlbezirk}`.trim();
+              let uwb = "";
+
+              if (composite.length > 5) {
+                uwb = `${bezirksnummer}${wahlbezirk}`.trim();
+              } else {
+                uwb = composite;
               }
+
+              const votes = Number(row["Die Linke"] || 0);
+
+              if (uwb) record[uwb] = votes;
             });
-            setCsvData(lookup);
+
+            console.log("UWB keys:", Object.keys(record).length);
+            setCsvData(record);
           },
         });
       })
       .catch(console.error);
-
-    console.log(csvData);
   }, []);
 
   const getColor = (votes: number) => {
@@ -68,29 +81,42 @@ const VoteMap = () => {
     });
 
     if (!features.length) return;
-    console.log("Clicked UWB:", features[0].properties?.UWB);
-    console.log(csvData);
+    const uwb = features[0].properties?.UWB;
+    const key = uwb?.toString().trim();
+    const votes = uwb ? csvData[key] : undefined;
+
+    console.log("UWB: " + uwb);
+    console.log("Stimmen: " + votes);
   };
 
-  const districtsFill = {
+  // Helper to build the match expression
+  const createFillColorExpression = (
+    csvData: Record<string, number>,
+    getColor: (votes: number) => string
+  ): ExpressionSpecification => {
+    const entries = Object.entries(csvData).flatMap(([id, votes]) => [
+      id,
+      getColor(votes),
+    ]);
+
+    return [
+      "match",
+      ["get", "UWB"],
+      ...entries,
+      "#cccccc",
+    ] as unknown as ExpressionSpecification;
+  };
+
+  const districtsFill: FillLayerSpecification = {
     id: "districts-fill",
     type: "fill",
     source: "voting-disctricts",
     paint: {
-      "fill-color": [
-        "match",
-        ["get", "combinedId"],
-        ...Object.entries(csvData).flatMap(([id, votes]) => [
-          id,
-          getColor(votes),
-        ]),
-        "#cccccc", // fallback color
-      ] as unknown as ExpressionSpecification,
+      "fill-color": createFillColorExpression(csvData, getColor),
       "fill-opacity": 0.2,
     },
-    //need to check how the filter works
     filter: ["==", "$type", "Polygon"],
-  } as FillLayerSpecification; // this needs to be cast to be type safe for the layer component
+  };
 
   const districtsOutline = {
     id: "districts-outline",
