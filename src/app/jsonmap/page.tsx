@@ -97,7 +97,7 @@ const JsonMap = () => {
       "match",
       ["get", "UWB"],
       ...entries,
-      "#cccccc",
+      "#7bfc03",
     ] as unknown as ExpressionSpecification;
   };
 
