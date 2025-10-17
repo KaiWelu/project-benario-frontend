@@ -8,6 +8,7 @@ import type {
 } from "maplibre-gl";
 import type { FeatureCollection, Feature } from "geojson";
 import Papa from "papaparse";
+import { electionResultsToJson, parseTest } from "@/util/csvParsing";
 
 interface CsvRow {
   Wahlbezirk: string;
@@ -86,6 +87,7 @@ const VoteMap = () => {
 
     console.log("UWB: " + uwb);
     console.log("Stimmen: " + votes);
+    parseTest();
   };
 
   // Helper to build the match expression
