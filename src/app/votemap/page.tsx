@@ -67,11 +67,10 @@ const VoteMap = () => {
   }, []);
 
   const getColor = (votes: number) => {
-    if (votes > 100) {
-      return "#BF092F";
-    } else {
-      return "#3B9797";
-    }
+    if (votes > 250) return "#FFD93D";
+    if (votes > 200) return "#450693";
+    if (votes > 100) return "#FF3F7F";
+    return "#cccccc";
   };
 
   const handleClick = (e: any) => {
@@ -113,7 +112,7 @@ const VoteMap = () => {
     source: "voting-disctricts",
     paint: {
       "fill-color": createFillColorExpression(csvData, getColor),
-      "fill-opacity": 0.2,
+      "fill-opacity": 0.6,
     },
     filter: ["==", "$type", "Polygon"],
   };
@@ -122,8 +121,9 @@ const VoteMap = () => {
     id: "districts-outline",
     type: "line",
     paint: {
-      "line-color": "#4C763B",
-      "line-width": 0.2,
+      "line-color": "#0F0E0E",
+      "line-width": 0.5,
+      "line-opacity": 0.2,
     },
   } as LineLayerSpecification;
 
