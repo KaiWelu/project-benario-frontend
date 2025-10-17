@@ -9,10 +9,39 @@ import type {
 import type { FeatureCollection } from "geojson";
 import SidePanel from "@/components/ui/SidePanel";
 
-interface CsvRow {
+export interface CsvRow {
   Bezirksnummer: string;
   Wahlbezirk: string;
   [key: string]: string | number; // dynamic party column
+}
+
+interface ElectionRow {
+  Adresse: string;
+  Stimmart: string;
+  Bezirksnummer: string;
+  Bezirksname: string;
+  Wahlbezirk: string;
+  Wahlbezirksart: string;
+  Briefwahlbezirk: string;
+  Abgeordnetenhauswahlkreis: string;
+  Bundestagswahlkreis: string;
+  OstWest: string;
+  WahlberechtigteInsgesamt: string;
+  WahlberechtigteA1: string;
+  WahlberechtigteA2: string;
+  WahlberechtigteA3: string;
+  Wählende: string;
+  WählendeB1: string;
+  GültigeStimmen: string;
+  UngültigeStimmen: string;
+  SPD?: string;
+  GRÜNE?: string;
+  CDU?: string;
+  DieLinke?: string;
+  AFD?: string;
+  FDP?: string;
+  BSW?: string;
+  [key: string]: string | undefined; // catch-all for any other party columns
 }
 
 function jsonToElectionRecord(
@@ -44,8 +73,11 @@ const JsonMap = () => {
   const [csvData, setCsvData] = useState<Record<string, number>>({});
   const [selectedParty, setSelectedParty] = useState<string>("DieLinke");
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+  const [electionData, setElectionData] = useState<CsvRow[] | null>(null);
+  const [selectedDistrict, setSelectedDistrict] = useState<any>(null);
 
   const mapRef = useRef<MapRef>(null);
+
   useEffect(() => {
     fetch("/data/Stimmbezirke-AGH21.geojson")
       .then((res) => res.json())
@@ -54,11 +86,26 @@ const JsonMap = () => {
   }, []);
 
   useEffect(() => {
+    const loadData = async () => {
+      try {
+        const res = await fetch("/data/Berlin_BT25_Custom.json");
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const rows: CsvRow[] = await res.json();
+        setElectionData(rows);
+        console.log("Loaded JSON rows: " + rows.length);
+      } catch (error) {
+        console.error("Error loading election data: " + error);
+      }
+    };
+    loadData(); // this is an helper for async functions so everything gets loaded
+  }, []);
+
+  useEffect(() => {
     fetch("/data/Berlin_BT25_Custom.json")
       .then((res) => res.json())
       .then((rows: CsvRow[]) => {
         const record = jsonToElectionRecord(rows, selectedParty); // pick the party here
-        console.log(selectedParty);
+        console.log("Selected Party: " + selectedParty);
         setCsvData(record);
       })
       .catch(console.error);
@@ -82,8 +129,20 @@ const JsonMap = () => {
     const key = uwb?.toString().trim();
     const votes = uwb ? csvData[key] : undefined;
 
-    console.log("UWB: " + uwb);
+    const getDistrictById = (id: string) => {
+      if (!electionData) return null;
+
+      return electionData.find((row) => row.Adresse === id) || null;
+    };
+
+    const compositeId = uwb.slice(0, 2) + "W" + uwb.slice(2);
+
+    const district = getDistrictById(compositeId);
+    console.log(district);
+    setSelectedDistrict(district);
+    /* console.log("UWB: " + uwb);
     console.log("Stimmen: " + votes);
+    console.log(electionData); */
   };
 
   // Helper to build the match expression
@@ -132,6 +191,7 @@ const JsonMap = () => {
         selectedParty={selectedParty}
         onPartyChange={setSelectedParty}
         onToggle={() => setIsSidebarOpen((prev) => !prev)}
+        selectedDistrict={selectedDistrict}
       />
       {geoData && (
         <Map
@@ -141,7 +201,7 @@ const JsonMap = () => {
           style={{ width: "100%", height: "100%" }}
           mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
           interactiveLayerIds={["districts-fill"]}
-          onLoad={() => console.log("Everything is loaded!")}
+          onLoad={() => console.log("Map loaded!")}
           onClick={handleClick}
         >
           <Source id="voting-districts" type="geojson" data={geoData}>

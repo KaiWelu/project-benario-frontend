@@ -16,3 +16,4 @@
 -web crawling for news articles based on election key words and selection of news organizations
 -github like activity chart for dtd data
 -BT elections results displayed on AGH Wahlkreise
+-extensive filter to search for niche election results for example distric search with >5 voters
