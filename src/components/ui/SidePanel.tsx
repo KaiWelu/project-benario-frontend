@@ -1,6 +1,7 @@
 import React from "react";
 import { Menu } from "lucide-react";
 import { CsvRow } from "@/app/jsonmap/page";
+import BarChart from "./BarChart";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -9,6 +10,17 @@ interface SidebarProps {
   onToggle: () => void;
   selectedDistrict?: CsvRow | null;
 }
+
+// this is just for prototyping
+const chartData = [
+  { party: "SPD", votes: 82 },
+  { party: "GRÜNE", votes: 107 },
+  { party: "CDU", votes: 61 },
+  { party: "Die Linke", votes: 82 },
+  { party: "AFD", votes: 21 },
+  { party: "FDP", votes: 20 },
+  { party: "BSW", votes: 23 },
+];
 
 const parties = ["SPD", "CDU", "GRÜNE", "DieLinke", "AFD", "FDP", "BSW"];
 
@@ -19,6 +31,15 @@ const SidePanel: React.FC<SidebarProps> = ({
   onToggle,
   selectedDistrict,
 }) => {
+  const buildChartData = (district: CsvRow | null) => {
+    if (!district) return null;
+
+    return parties.map((party) => ({
+      party,
+      votes: Number(district[party] || -1),
+    }));
+  };
+
   if (!isOpen) {
     return (
       <nav className="fixed top-0 left-0 mt-2 ml-4 z-40 rounded-full shadow-md shadow-gray-300">
@@ -54,13 +75,14 @@ const SidePanel: React.FC<SidebarProps> = ({
             <h2 className="text-2xl font-bold mb-1">Stimmbezirk</h2>
             <p className="mb-2 font-bold">{selectedDistrict.Adresse}</p>
             <p className="mb-2 font-bold">{selectedDistrict.Bezirksname}</p>
-            {parties.map((party) => (
+            {/*  {parties.map((party) => (
               <p key={party}>
                 {party}: {selectedDistrict[party]}
               </p>
-            ))}
+            ))} */}
           </div>
         )}
+        <BarChart district={buildChartData(selectedDistrict || null)} />
       </main>
     </nav>
   );

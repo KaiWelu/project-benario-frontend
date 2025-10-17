@@ -75,6 +75,8 @@ const JsonMap = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   const [electionData, setElectionData] = useState<CsvRow[] | null>(null);
   const [selectedDistrict, setSelectedDistrict] = useState<any>(null);
+  // this is for highlighting
+  const [selectedUwb, setSelectedUwb] = useState<string | null>(null);
 
   const mapRef = useRef<MapRef>(null);
 
@@ -143,6 +145,7 @@ const JsonMap = () => {
     /* console.log("UWB: " + uwb);
     console.log("Stimmen: " + votes);
     console.log(electionData); */
+    setSelectedUwb(uwb); // highlights this district
   };
 
   // Helper to build the match expression
@@ -161,6 +164,19 @@ const JsonMap = () => {
       ...entries,
       "#7bfc03",
     ] as unknown as ExpressionSpecification;
+  };
+
+  // this is for highlighting the selected district
+  const selectedDistrictLayer: FillLayerSpecification = {
+    id: "selected-district",
+    type: "fill",
+    source: "voting-districts",
+    paint: {
+      "fill-color": createFillColorExpression(csvData, getColor), // this gets the original color
+      "fill-opacity": 0.7,
+      "fill-outline-color": "#000000", // white border around the fill
+    },
+    filter: ["==", "UWB", selectedUwb || ""], // only show when a UWB is selected
   };
 
   const districtsFill: FillLayerSpecification = {
@@ -207,6 +223,7 @@ const JsonMap = () => {
           <Source id="voting-districts" type="geojson" data={geoData}>
             <Layer {...districtsFill} source="voting-districts" />
             <Layer {...districtsOutline} />
+            {selectedUwb && <Layer {...selectedDistrictLayer} />}
           </Source>
         </Map>
       )}
