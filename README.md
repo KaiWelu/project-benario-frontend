@@ -1,5 +1,3 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
 ## Getting Started
 
 First, run the development server:
@@ -16,12 +14,16 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Map
+### Map
 
 This project uses [MapLibre](https://maplibre.org/maplibre-style-spec/layers/) and the react wrapper [react-maplibre](https://visgl.github.io/react-maplibre/docs/api-reference/layer) to display data on openstreet maps.
 
 Maplibre will be used for standard map funcionallity and [deck.gl](https://deck.gl/) will be used to display layers of huge datasets.
+
+### Icons
+
+The icons used in this project are from [Lucide](https://lucide.dev/guide/)
+
+### Graphs and Bars
+
+Data will be displayed with [Nivo](https://nivo.rocks/)

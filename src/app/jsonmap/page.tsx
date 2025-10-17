@@ -6,7 +6,8 @@ import type {
   FillLayerSpecification,
   LineLayerSpecification,
 } from "maplibre-gl";
-import type { FeatureCollection, Feature } from "geojson";
+import type { FeatureCollection } from "geojson";
+import SidePanel from "@/components/ui/SidePanel";
 
 interface CsvRow {
   Bezirksnummer: string;
@@ -41,24 +42,27 @@ function jsonToElectionRecord(
 const JsonMap = () => {
   const [geoData, setGeoData] = useState<FeatureCollection | null>(null);
   const [csvData, setCsvData] = useState<Record<string, number>>({});
+  const [selectedParty, setSelectedParty] = useState<string>("DieLinke");
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
 
   const mapRef = useRef<MapRef>(null);
-
-  const dataLoading = useEffect(() => {
+  useEffect(() => {
     fetch("/data/Stimmbezirke-AGH21.geojson")
       .then((res) => res.json())
       .then((data) => setGeoData(data))
       .catch((err) => console.error("Error loading GeoJSON:", err));
+  }, []);
 
+  useEffect(() => {
     fetch("/data/Berlin_BT25_Custom.json")
       .then((res) => res.json())
       .then((rows: CsvRow[]) => {
-        const record = jsonToElectionRecord(rows, "AFD"); // pick the party here
-        console.log("UWB keys:", Object.keys(record).length);
+        const record = jsonToElectionRecord(rows, selectedParty); // pick the party here
+        console.log(selectedParty);
         setCsvData(record);
       })
       .catch(console.error);
-  }, []);
+  }, [selectedParty]);
 
   const getColor = (votes: number) => {
     if (votes > 250) return "#FFD93D";
@@ -78,9 +82,8 @@ const JsonMap = () => {
     const key = uwb?.toString().trim();
     const votes = uwb ? csvData[key] : undefined;
 
-    /* console.log("UWB: " + uwb);
+    console.log("UWB: " + uwb);
     console.log("Stimmen: " + votes);
-    parseTest(); */
   };
 
   // Helper to build the match expression
@@ -124,6 +127,12 @@ const JsonMap = () => {
 
   return (
     <div className="bg-black h-screen w-screen">
+      <SidePanel
+        isOpen={isSidebarOpen}
+        selectedParty={selectedParty}
+        onPartyChange={setSelectedParty}
+        onToggle={() => setIsSidebarOpen((prev) => !prev)}
+      />
       {geoData && (
         <Map
           id="test-map"
