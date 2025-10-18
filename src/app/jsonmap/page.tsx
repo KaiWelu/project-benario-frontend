@@ -1,5 +1,11 @@
 "use client";
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useMemo,
+} from "react";
 import { Map, Source, Layer, MapRef } from "@vis.gl/react-maplibre";
 import type {
   ExpressionSpecification,
@@ -142,9 +148,6 @@ const JsonMap = () => {
     const district = getDistrictById(compositeId);
     console.log(district);
     setSelectedDistrict(district);
-    /* console.log("UWB: " + uwb);
-    console.log("Stimmen: " + votes);
-    console.log(electionData); */
     setSelectedUwb(uwb); // highlights this district
   };
 
@@ -166,13 +169,21 @@ const JsonMap = () => {
     ] as unknown as ExpressionSpecification;
   };
 
+  // we need something better for performance
+  // use map.setFeatureState() (recommended for interactivity)
+  const fillExpression = useMemo(
+    () => createFillColorExpression(csvData, getColor),
+    [csvData]
+  );
+
   // this is for highlighting the selected district
   const selectedDistrictLayer: FillLayerSpecification = {
     id: "selected-district",
     type: "fill",
     source: "voting-districts",
     paint: {
-      "fill-color": createFillColorExpression(csvData, getColor), // this gets the original color
+      "fill-color":
+        fillExpression /* createFillColorExpression(csvData, getColor), // this gets the original color */,
       "fill-opacity": 0.7,
       "fill-outline-color": "#000000", // white border around the fill
     },
@@ -185,7 +196,12 @@ const JsonMap = () => {
     source: "voting-disctricts",
     paint: {
       "fill-color": createFillColorExpression(csvData, getColor),
-      "fill-opacity": 0.6,
+      "fill-opacity": [
+        "case",
+        ["boolean", ["feature-state", "selected"], false],
+        1.0, // highlighted
+        0.6, // default
+      ],
     },
     filter: ["==", "$type", "Polygon"],
   };

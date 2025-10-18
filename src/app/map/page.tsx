@@ -2,12 +2,11 @@
 import React, { useState, useEffect } from "react";
 import { Map } from "@vis.gl/react-maplibre";
 import maplibregl from "maplibre-gl";
-import type { FeatureCollection } from "geojson";
 
-/* interface FeatureCollection {
+interface FeatureCollection {
   type: string;
   features: any[];
-} */
+}
 
 const TestMap = () => {
   const [geoData, setGeoData] = useState<any>(null);
