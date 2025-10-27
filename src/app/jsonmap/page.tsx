@@ -1,11 +1,5 @@
 "use client";
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useRef,
-  useMemo,
-} from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Map, Source, Layer, MapRef } from "@vis.gl/react-maplibre";
 import type {
   ExpressionSpecification,

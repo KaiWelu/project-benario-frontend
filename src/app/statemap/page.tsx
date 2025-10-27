@@ -5,21 +5,21 @@ import type {
   FillLayerSpecification,
   LineLayerSpecification,
 } from "maplibre-gl";
-import type { FeatureCollection, Feature } from "geojson";
+import type { FeatureCollection } from "geojson";
 
-const ReactMap = () => {
+const StateMap = () => {
   const [geoData, setGeoData] = useState<FeatureCollection | null>(null);
 
   const mapRef = useRef<MapRef>(null);
 
   useEffect(() => {
-    fetch("/data/Stimmbezirke-AGH21.geojson")
+    fetch("/data/districts/berlin/AGH_Wahlkreise_26.geojson")
       .then((res) => res.json())
       .then((data) => setGeoData(data))
       .catch((err) => console.error("Error loading GeoJSON:", err));
   }, []);
 
-  const handleClick = (e: any) => {
+  /*   const handleClick = (e: any) => {
     if (!mapRef.current || !geoData) return;
     const features = mapRef.current.queryRenderedFeatures(e.point, {
       layers: ["districts-fill"],
@@ -27,7 +27,7 @@ const ReactMap = () => {
 
     if (!features.length) return;
     console.log("Clicked UWB:", features[0].properties?.UWB);
-  };
+  }; */
 
   const districtsFill = {
     id: "districts-fill",
@@ -61,7 +61,7 @@ const ReactMap = () => {
           mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
           interactiveLayerIds={["districts-fill"]}
           onLoad={() => console.log("Everything is loaded!")}
-          onClick={handleClick}
+          /* onClick={handleClick} */
         >
           <Source id="voting-districts" type="geojson" data={geoData}>
             <Layer {...districtsFill} source="voting-districts" />
@@ -73,4 +73,4 @@ const ReactMap = () => {
   );
 };
 
-export default ReactMap;
+export default StateMap;
