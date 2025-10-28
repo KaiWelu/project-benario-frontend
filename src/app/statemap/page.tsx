@@ -6,18 +6,51 @@ import type {
   LineLayerSpecification,
 } from "maplibre-gl";
 import type { FeatureCollection } from "geojson";
+import { CsvRow } from "../jsonmap/page";
 
 const StateMap = () => {
   const [geoData, setGeoData] = useState<FeatureCollection | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [electionData, setElectionData] = useState<CsvRow[] | null>(null);
 
   const mapRef = useRef<MapRef>(null);
 
+  function getAllVotes(bez: any, awk2: any, party: string) {
+    let votes: number = 0;
+    let newBez = bez.toString();
+    let newAwk2 = awk2.toString();
+
+    console.log("BEZ: " + bez);
+    console.log("awk2: " + awk2);
+
+    /* if (newBez[0] === "0") {
+      newBez = newBez.slice(1);
+    } */
+
+    if (newAwk2[0] === "0") {
+      newAwk2 = newAwk2.slice(1);
+    }
+
+    const id = newBez + "W" + newAwk2;
+
+    console.log(newBez + "W" + newAwk2);
+
+    electionData?.map((row) => {
+      const aghID = String(row.Adresse).slice(0, 4);
+      /* console.log("AGH ID: " + aghID); */
+      if (aghID == id) {
+        console.log("YES!");
+        votes = votes + Number(row.DieLinke);
+      } else {
+        /* console.log(row.Adresse);
+        console.log(uwbId); */
+      }
+      /* console.log(aghId); */
+    });
+    return votes;
+  }
+
   useEffect(() => {
-    /* fetch("/data/districts/berlin/AGH_Wahlkreise_26.geojson")
-      .then((res) => res.json())
-      .then((data) => setGeoData(data))
-      .catch((err) => console.error("Error loading GeoJSON:", err)); */
     fetch("/data/districts/berlin/AGH_Wahlkreise_26.geojson")
       .then((res) => res.json())
       .then((data: FeatureCollection) => {
@@ -35,6 +68,21 @@ const StateMap = () => {
       .catch((err) => console.error("Error loading GeoJSON:", err));
   }, []);
 
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const res = await fetch("/data/Berlin_BT25_Custom.json");
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const rows: CsvRow[] = await res.json();
+        setElectionData(rows);
+        console.log("Loaded JSON rows: " + rows.length);
+      } catch (error) {
+        console.error("Error loading election data: " + error);
+      }
+    };
+    loadData(); // this is an helper for async functions so everything gets loaded
+  }, []);
+
   const handleClick = (e: any) => {
     if (!mapRef.current || !geoData) return;
     const features = mapRef.current.queryRenderedFeatures(e.point, {
@@ -47,12 +95,21 @@ const StateMap = () => {
 
     /* const feature = features[0];
     const { BEZ, AWK, AWK2 } = feature.properties ?? {}; */
+    /* console.log(electionData); */
 
     /* console.log(features[0]); */
     console.log("Bezirk:", features[0].properties?.BEZ);
+    console.log("====BEZIRK====");
     console.log("AWK:", features[0].properties?.AWK);
     console.log("AWK2:", features[0].properties?.AWK2);
-    console.log(features[0].id);
+    console.log(
+      "Votes: " +
+        getAllVotes(
+          features[0].properties?.BEZ,
+          features[0].properties?.AWK2,
+          "DieLinke"
+        )
+    );
     console.log("\n");
   };
 
