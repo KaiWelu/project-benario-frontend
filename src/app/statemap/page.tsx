@@ -23,30 +23,50 @@ const StateMap = () => {
     console.log("BEZ: " + bez);
     console.log("awk2: " + awk2);
 
-    /* if (newBez[0] === "0") {
-      newBez = newBez.slice(1);
-    } */
-
     if (newAwk2[0] === "0") {
       newAwk2 = newAwk2.slice(1);
     }
 
     const id = newBez + "W" + newAwk2;
 
-    console.log(newBez + "W" + newAwk2);
-
-    electionData?.map((row) => {
+    const bwbList: string[] = [];
+    const uwbList: string[] = [];
+    electionData?.forEach((row) => {
       const aghID = String(row.Adresse).slice(0, 4);
+      const bwb = String(row.Adresse);
+      const bwbID =
+        String(row.Briefwahlbezirk).slice(0, 2) +
+        "B" +
+        String(row.Briefwahlbezirk).slice(2, 4);
+
+      /* console.log("Adresse: " + bwbID);
+      console.log(bwb); */
       /* console.log("AGH ID: " + aghID); */
-      if (aghID == id) {
-        console.log("YES!");
-        votes = votes + Number(row.DieLinke);
-      } else {
-        /* console.log(row.Adresse);
-        console.log(uwbId); */
+      if (aghID === id) {
+        votes += Number(row.DieLinke || 0);
+        if (bwbList.includes(bwbID) !== true) bwbList.push(bwbID);
+        uwbList.push(aghID);
       }
+      /* electionData?.map((row) => {
+        if (bwb === bwbID) {
+          votes = votes + Number(row.DieLinke);
+          return;
+        }
+      }); */
       /* console.log(aghId); */
     });
+
+    electionData?.forEach((row) => {
+      bwbList.forEach((bwb) => {
+        if (bwb === row.Adresse) {
+          votes = votes + Number(row.DieLinke);
+          console.log("YES!!");
+        }
+      });
+    });
+
+    console.log(uwbList);
+    console.log(bwbList);
     return votes;
   }
 
