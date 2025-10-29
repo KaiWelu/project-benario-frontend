@@ -23,6 +23,26 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-work-sans), sans-serif;
+  font-weight: 700;
+}
+
+p,
+span,
+li,
+a,
+input,
+button {
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 200;
+}
+
 html,
 body,
 #__next,
