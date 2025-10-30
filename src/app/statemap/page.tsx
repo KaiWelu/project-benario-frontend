@@ -7,6 +7,7 @@ import type {
 } from "maplibre-gl";
 import type { FeatureCollection } from "geojson";
 import { CsvRow } from "../jsonmap/page";
+import MapLayerPanel from "@/components/ui/MapLayerPanel";
 
 const StateMap = () => {
   const [geoData, setGeoData] = useState<FeatureCollection | null>(null);
@@ -204,6 +205,7 @@ const StateMap = () => {
           )}
         </Map>
       )}
+      <MapLayerPanel />
     </div>
   );
 };

@@ -11,17 +11,6 @@ interface SidebarProps {
   selectedDistrict?: CsvRow | null;
 }
 
-// this is just for prototyping
-const chartData = [
-  { party: "SPD", votes: 82 },
-  { party: "GRÜNE", votes: 107 },
-  { party: "CDU", votes: 61 },
-  { party: "Die Linke", votes: 82 },
-  { party: "AFD", votes: 21 },
-  { party: "FDP", votes: 20 },
-  { party: "BSW", votes: 23 },
-];
-
 const parties = ["SPD", "CDU", "GRÜNE", "DieLinke", "AFD", "FDP", "BSW"];
 
 const SidePanel: React.FC<SidebarProps> = ({
