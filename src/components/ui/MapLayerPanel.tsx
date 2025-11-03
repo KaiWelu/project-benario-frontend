@@ -18,7 +18,7 @@ const MapLayerPanel = () => {
   const activeId = useAppSelector((s) => s.mapLayer.activeLayerId);
   return (
     <nav className="bg-gray-50/90 shadow-md absolute top-0 right-0 flex h-full p-4 just w-sm flex-col gap-2 overflow-y-auto">
-      <div className="border-b-2 p-1 mb-3 border-red-700">
+      {/*   <div className="border-b-2 p-1 mb-3 border-red-700">
         <div className="flex flex-row gap-1 items-center">
           <LandPlot size={26} strokeWidth={1} />
           <p className="text-2xl">Wahlkreisauswahl</p>
@@ -53,7 +53,7 @@ const MapLayerPanel = () => {
           Kleinste Einheiten für Wahlen in Berlin. Entspricht einem Wahllokal
           und zugeordnetem Briefwahlbezirk.
         </p>
-      </button>
+      </button>*/}
       <div className="border-b-2 p-1 mb-3 border-red-700">
         <div className="flex flex-row gap-1 items-center">
           <LandPlot size={26} strokeWidth={1} />
@@ -68,9 +68,9 @@ const MapLayerPanel = () => {
           return (
             <label
               key={layer.id}
-              className={`cursor-pointer block rounded-md p-3 border transition-shadow ${
+              className={`cursor-pointer block rounded-md p-2 border transition-shadow ${
                 checked
-                  ? "bg-cyan-50 border-cyan-300 shadow-sm"
+                  ? "bg-rose-50 border-gray-400 shadow-sm"
                   : "bg-white border-gray-200 hover:shadow-sm"
               }`}
             >
@@ -85,16 +85,16 @@ const MapLayerPanel = () => {
                   aria-checked={checked}
                 />
                 <div className="flex-shrink-0 mt-0.5">
-                  <Icon size={20} strokeWidth={1} />
+                  <Icon size={22} strokeWidth={1} />
                 </div>
                 <div className="flex-1 text-left">
                   <div className="flex items-center justify-between">
-                    <span className="font-medium text-lg">{layer.name}</span>
-                    {/* {checked && (
+                    <h2 className="font-medium text-lg">{layer.name}</h2>
+                    {/*  {checked && (
                       <span className="text-sm text-cyan-700">Ausgewählt</span>
                     )} */}
                   </div>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm text-gray-800 mt-1">
                     {layer.description}
                   </p>
                 </div>

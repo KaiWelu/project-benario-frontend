@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Work_Sans } from "next/font/google";
+import { Inter, Work_Sans, Montserrat } from "next/font/google";
 import "./globals.css";
 import ReduxProvider from "@/providers/ReduxProvider";
 
@@ -11,6 +11,11 @@ const inter = Inter({
 const workSans = Work_Sans({
   subsets: ["latin"],
   variable: "--font-work-sans",
+});
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  variable: "--font-montserrat",
 });
 
 export const metadata: Metadata = {
@@ -26,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-screen w-screen">
       <body
-        className={`${inter.variable} ${workSans.variable} antialiased h-screen w-screen`}
+        className={`${inter.variable} ${workSans.variable} ${montserrat.variable} antialiased h-screen w-screen`}
       >
         <ReduxProvider>{children}</ReduxProvider>
       </body>

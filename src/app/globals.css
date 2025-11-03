@@ -29,8 +29,8 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-work-sans), sans-serif;
-  font-weight: 700;
+  font-family: var(--font-montserrat), sans-serif;
+  font-weight: 500;
 }
 
 p,
