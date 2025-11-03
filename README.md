@@ -27,3 +27,7 @@ The icons used in this project are from [Lucide](https://lucide.dev/guide/)
 ### Graphs and Bars
 
 Data will be displayed with [Nivo](https://nivo.rocks/)
+
+### State Management
+
+Global state will be managed by [Redux](https://react-redux.js.org/)

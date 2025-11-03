@@ -17,10 +17,10 @@ const MapLayerPanel = () => {
           <p className="text-2xl">Wahlkreisauswahl</p>
         </div>
       </div>
-      <button className="text-md flex flex-col rounded-sm shadow-sm p-2 bg-white items-start hover:bg-cyan-100">
+      <button className="text-md flex flex-col rounded-sm shadow-sm p-2 bg-white items-start hover:bg-rose-50 hover:border-1">
         <div className="flex flex-row items-center gap-1.5 mb-1">
           <Grid2x2 size={22} strokeWidth={1} />
-          <p className="text-lg">Bundeswahlkreise</p>
+          <h1>Bundeswahlkreise</h1>
         </div>
         <p className="text-sm text-start border-t-1 pt-1 border-gray-400">
           Wahlkreise für die Bundestagswahlen 2025. Ungefähr 200.000
