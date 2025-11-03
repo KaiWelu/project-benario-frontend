@@ -8,6 +8,8 @@ import type {
 import type { FeatureCollection } from "geojson";
 import { CsvRow } from "../jsonmap/page";
 import MapLayerPanel from "@/components/ui/MapLayerPanel";
+import { useAppSelector } from "@/store";
+import { MAP_SOURCES } from "@/lib/constants/mapSources";
 
 const StateMap = () => {
   const [geoData, setGeoData] = useState<FeatureCollection | null>(null);
@@ -16,9 +18,12 @@ const StateMap = () => {
 
   const mapRef = useRef<MapRef>(null);
 
+  // Redux layer state
+  const activeLayerId = useAppSelector((s) => s.mapLayer.activeLayerId);
+
   function getAllVotes(bez: any, awk2: any, party: string) {
     let votes: number = 0;
-    let newBez = bez.toString();
+    const newBez = bez.toString();
     let newAwk2 = awk2.toString();
 
     console.log("BEZ: " + bez);
@@ -72,7 +77,11 @@ const StateMap = () => {
   }
 
   useEffect(() => {
-    fetch("/data/districts/berlin/AGH_Wahlkreise_26.geojson")
+    if (!activeLayerId) return;
+    const url = MAP_SOURCES[activeLayerId];
+    if (!url) return;
+
+    fetch(url)
       .then((res) => res.json())
       .then((data: FeatureCollection) => {
         // adds unique ids to the features based on AWK or as fallback the index
@@ -87,7 +96,7 @@ const StateMap = () => {
         });
       })
       .catch((err) => console.error("Error loading GeoJSON:", err));
-  }, []);
+  }, [activeLayerId]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -194,10 +203,13 @@ const StateMap = () => {
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
         >
-          <Source id="voting-districts" type="geojson" data={geoData}>
-            <Layer {...districtsFill} source="voting-districts" />
-            <Layer {...districtsOutline} />
-          </Source>
+          {activeLayerId && (
+            <Source id="voting-districts" type="geojson" data={geoData}>
+              <Layer {...districtsFill} source="voting-districts" />
+              <Layer {...districtsOutline} />
+            </Source>
+          )}
+
           {hoveredId && (
             <div className="bg-amber-200 absolute top-2 left-2 p-2">
               {hoveredId}
