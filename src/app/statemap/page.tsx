@@ -45,28 +45,17 @@ const StateMap = () => {
         "B" +
         String(row.Briefwahlbezirk).slice(2, 4);
 
-      /* console.log("Adresse: " + bwbID);
-      console.log(bwb); */
-      /* console.log("AGH ID: " + aghID); */
       if (aghID === id) {
         votes += Number(row.DieLinke || 0);
         if (bwbList.includes(bwbID) !== true) bwbList.push(bwbID);
         uwbList.push(aghID);
       }
-      /* electionData?.map((row) => {
-        if (bwb === bwbID) {
-          votes = votes + Number(row.DieLinke);
-          return;
-        }
-      }); */
-      /* console.log(aghId); */
     });
 
     electionData?.forEach((row) => {
       bwbList.forEach((bwb) => {
         if (bwb === row.Adresse) {
           votes = votes + Number(row.DieLinke);
-          console.log("YES!!");
         }
       });
     });
@@ -123,11 +112,6 @@ const StateMap = () => {
       return;
     }
 
-    /* const feature = features[0];
-    const { BEZ, AWK, AWK2 } = feature.properties ?? {}; */
-    /* console.log(electionData); */
-
-    /* console.log(features[0]); */
     console.log("Bezirk:", features[0].properties?.BEZ);
     console.log("====BEZIRK====");
     console.log("AWK:", features[0].properties?.AWK);
@@ -144,7 +128,7 @@ const StateMap = () => {
   };
 
   const handleMouseMove = (e: any) => {
-    if (!mapRef.current) return;
+    if (!mapRef.current && !geoData) return;
 
     const features = mapRef.current.queryRenderedFeatures(e.point, {
       layers: ["districts-fill"],
@@ -157,7 +141,10 @@ const StateMap = () => {
     }
   };
 
-  const handleMouseLeave = () => setHoveredId(null);
+  const handleMouseLeave = () => {
+    if (!mapRef.current && !geoData) return;
+    setHoveredId(null);
+  };
 
   const districtsFill = {
     id: "districts-fill",
@@ -187,36 +174,46 @@ const StateMap = () => {
 
   return (
     <div className="bg-black h-screen w-screen relative">
-      {geoData && (
-        <Map
-          id="test-map"
-          ref={mapRef}
-          initialViewState={{ longitude: 13.405, latitude: 52.52, zoom: 12 }}
-          style={{
-            width: "100%",
-            height: "100%",
-          }}
-          mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
-          interactiveLayerIds={["districts-fill"]}
-          onLoad={() => console.log("Everything is loaded!")}
-          onClick={handleClick}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={handleMouseLeave}
-        >
-          {activeLayerId && (
-            <Source id="voting-districts" type="geojson" data={geoData}>
-              <Layer {...districtsFill} source="voting-districts" />
-              <Layer {...districtsOutline} />
-            </Source>
-          )}
+      <Map
+        id="test-map"
+        ref={mapRef}
+        initialViewState={{ longitude: 13.405, latitude: 52.52, zoom: 12 }}
+        style={{
+          width: "100%",
+          height: "100%",
+        }}
+        mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+        interactiveLayerIds={
+          geoData && activeLayerId ? ["districts-fill"] : undefined
+        }
+        onLoad={() => console.log("Everything is loaded!")}
+        onClick={(e) => {
+          if (!geoData || !activeLayerId) return; // this way there are no errors if no district layer is selected
+          handleClick(e);
+        }}
+        onMouseMove={(e) => {
+          if (!geoData || !activeLayerId) return;
+          handleMouseMove(e);
+        }}
+        onMouseLeave={(e) => {
+          if (!geoData || !activeLayerId) return;
+          handleMouseLeave(e);
+        }}
+      >
+        {activeLayerId && geoData && (
+          <Source id="voting-districts" type="geojson" data={geoData}>
+            <Layer {...districtsFill} source="voting-districts" />
+            <Layer {...districtsOutline} />
+          </Source>
+        )}
 
-          {hoveredId && (
-            <div className="bg-amber-200 absolute top-2 left-2 p-2">
-              {hoveredId}
-            </div>
-          )}
-        </Map>
-      )}
+        {hoveredId && (
+          <div className="bg-amber-200 absolute top-2 left-2 p-2">
+            {hoveredId}
+          </div>
+        )}
+      </Map>
+
       <MapLayerPanel />
     </div>
   );
