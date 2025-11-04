@@ -1,13 +1,6 @@
 "use client";
 import React from "react";
-import {
-  LandPlot,
-  Grid2x2,
-  Grid3x2,
-  Grid3x3,
-  Layers,
-  ChartNoAxesCombined,
-} from "lucide-react";
+import { LandPlot } from "lucide-react";
 
 import { MAP_LAYERS } from "@/lib/constants/mapLayers";
 import { useAppDispatch, useAppSelector } from "@/store";
@@ -103,82 +96,6 @@ const MapLayerPanel = () => {
           );
         })}
       </fieldset>
-      {/* <div className="border-b-2 p-1 mb-3 mt-3 border-red-700">
-        <div className="flex flex-row gap-1 items-center">
-          <Layers size={26} strokeWidth={1} />
-          <p className="text-2xl">Ebenen</p>
-        </div>
-      </div>
-      <button className="text-md flex flex-col rounded-sm shadow-sm p-2 bg-white items-start hover:bg-cyan-100">
-        <div className="flex flex-row items-center gap-1.5 mb-1">
-          <ChartNoAxesCombined size={22} strokeWidth={1} />
-          <h1>Stimmbezirke</h1>
-        </div>
-        <p className="text-sm text-start border-t-1 pt-1 border-gray-400">
-          Kleinste Einheiten für Wahlen in Berlin. Entspricht einem Wahllokal
-          und zugeordnetem Briefwahlbezirk.
-        </p>
-      </button>
-      <button className="text-md flex flex-col rounded-sm shadow-sm p-2 bg-white items-start hover:bg-cyan-100">
-        <div className="flex flex-row items-center gap-1.5 mb-1">
-          <ChartNoAxesCombined size={22} strokeWidth={1} />
-          <h1>Stimmbezirke</h1>
-        </div>
-        <p className="text-sm text-start border-t-1 pt-1 border-gray-400">
-          Kleinste Einheiten für Wahlen in Berlin. Entspricht einem Wahllokal
-          und zugeordnetem Briefwahlbezirk.
-        </p>
-      </button>
-      <button className="text-md flex flex-col rounded-sm shadow-sm p-2 bg-white items-start hover:bg-cyan-100">
-        <div className="flex flex-row items-center gap-1.5 mb-1">
-          <ChartNoAxesCombined size={22} strokeWidth={1} />
-          <h1>Stimmbezirke</h1>
-        </div>
-        <p className="text-sm text-start border-t-1 pt-1 border-gray-400">
-          Kleinste Einheiten für Wahlen in Berlin. Entspricht einem Wahllokal
-          und zugeordnetem Briefwahlbezirk.
-        </p>
-      </button>
-      <button className="text-md flex flex-col rounded-sm shadow-sm p-2 bg-white items-start hover:bg-cyan-100">
-        <div className="flex flex-row items-center gap-1.5 mb-1">
-          <ChartNoAxesCombined size={22} strokeWidth={1} />
-          <h1>Stimmbezirke</h1>
-        </div>
-        <p className="text-sm text-start border-t-1 pt-1 border-gray-400">
-          Kleinste Einheiten für Wahlen in Berlin. Entspricht einem Wahllokal
-          und zugeordnetem Briefwahlbezirk.
-        </p>
-      </button>
-      <button className="text-md flex flex-col rounded-sm shadow-sm p-2 bg-white items-start hover:bg-cyan-100">
-        <div className="flex flex-row items-center gap-1.5 mb-1">
-          <ChartNoAxesCombined size={22} strokeWidth={1} />
-          <h1>Stimmbezirke</h1>
-        </div>
-        <p className="text-sm text-start border-t-1 pt-1 border-gray-400">
-          Kleinste Einheiten für Wahlen in Berlin. Entspricht einem Wahllokal
-          und zugeordnetem Briefwahlbezirk.
-        </p>
-      </button>
-      <button className="text-md flex flex-col rounded-sm shadow-sm p-2 bg-white items-start hover:bg-cyan-100">
-        <div className="flex flex-row items-center gap-1.5 mb-1">
-          <ChartNoAxesCombined size={22} strokeWidth={1} />
-          <h1>Stimmbezirke</h1>
-        </div>
-        <p className="text-sm text-start border-t-1 pt-1 border-gray-400">
-          Kleinste Einheiten für Wahlen in Berlin. Entspricht einem Wahllokal
-          und zugeordnetem Briefwahlbezirk.
-        </p>
-      </button>
-      <button className="text-md flex flex-col rounded-sm shadow-sm p-2 bg-white items-start hover:bg-cyan-100">
-        <div className="flex flex-row items-center gap-1.5 mb-1">
-          <ChartNoAxesCombined size={22} strokeWidth={1} />
-          <h1>Stimmbezirke</h1>
-        </div>
-        <p className="text-sm text-start border-t-1 pt-1 border-gray-400">
-          Kleinste Einheiten für Wahlen in Berlin. Entspricht einem Wahllokal
-          und zugeordnetem Briefwahlbezirk.
-        </p>
-      </button> */}
     </nav>
   );
 };

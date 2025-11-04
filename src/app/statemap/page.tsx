@@ -10,6 +10,7 @@ import { CsvRow } from "../jsonmap/page";
 import MapLayerPanel from "@/components/ui/MapLayerPanel";
 import { useAppSelector } from "@/store";
 import { MAP_SOURCES } from "@/lib/constants/mapSources";
+import { filterBerlinDistricts } from "@/lib/util/berlinFilter";
 
 const StateMap = () => {
   const [geoData, setGeoData] = useState<FeatureCollection | null>(null);
