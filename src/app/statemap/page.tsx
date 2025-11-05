@@ -195,9 +195,9 @@ const StateMap = () => {
           if (!geoData || !activeLayerId) return;
           handleMouseMove(e);
         }}
-        onMouseLeave={(e) => {
+        onMouseLeave={() => {
           if (!geoData || !activeLayerId) return;
-          handleMouseLeave(e);
+          handleMouseLeave();
         }}
       >
         {activeLayerId && geoData && (
