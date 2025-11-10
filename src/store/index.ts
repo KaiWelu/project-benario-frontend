@@ -1,10 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import mapLayerReducer from "./mapLayerSlice";
+import mapSliceReducer from "./mapSlice";
+
 import { useDispatch, useSelector, TypedUseSelectorHook } from "react-redux";
 
 export const store = configureStore({
   reducer: {
     mapLayer: mapLayerReducer,
+    map: mapSliceReducer,
   },
 });
 

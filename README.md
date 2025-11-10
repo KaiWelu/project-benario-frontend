@@ -31,3 +31,11 @@ Data will be displayed with [Nivo](https://nivo.rocks/)
 ### State Management
 
 Global state will be managed by [Redux](https://react-redux.js.org/)
+
+#### basic scheme on how to work with data and layers
+
+Redux State (What to show)
+↓
+Config Files (How to calculate & display)
+↓
+Component (Rendering)
